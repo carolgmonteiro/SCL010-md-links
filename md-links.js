@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const marked = require("marked");
 //para hacer petición url
 const fetch = require("fetch");
 const fetchUrl = fetch.fetchUrl;
@@ -24,51 +25,45 @@ const fileHound = require("fileHound");
 
 let pathToFile = process.argv[2];
 console.log("PATH:", pathToFile);
-let firstOption = process.argv[3];
-console.log("FIRST OP:", firstOption);
-let secondOption = process.argv[4];
-console.log("SECOND OP:", secondOption);
+// let firstOption = process.argv[3];
+// console.log("FIRST OP:", firstOption);
+// let secondOption = process.argv[4];
+// console.log("SECOND OP:", secondOption);
 //ruta absoluta para relativa
 pathToFile = path.resolve(pathToFile);
 console.log("PATH RESOLVE:", pathToFile);
 pathToFile = path.normalize(pathToFile);
 console.log("PATH NORMALIZE:", pathToFile);
-let links = [];
-let options = {
-  validate: false,
-  stats: false,
-  flagError: false
-};
-if (
-  (firstOption === "--validate" && secondOption === "--stats") ||
-  (firstOption === "--v" && secondOption === "--s")
-) {
-  options.validate = true;
-  options.stats = true;
-  // options.flagError = false;
-} else if (firstOption === "--validate" || firstOption === "--v") {
-  options.validate = true;
-  option.stats = false;
-  // options.flagError = false;
-} else if (firstOption === "--stats" || firstOption === "--s") {
-  options.validate = false;
-  options.stats = true;
-  // options.flagError = false;
-}
+// let links = [];
+//opciones
+// let options = {
+//   validate: false,
+//   stats: false
+// };
+// if (
+//   (firstOption === "--validate" && secondOption === "--stats") ||
+//   (firstOption === "--v" && secondOption === "--s")
+// ) {
+//   options.validate = true;
+//   options.stats = true;
+// } else if (firstOption === "--validate" || firstOption === "--v") {
+//   options.validate = true;
+//   option.stats = false;
+// } else if (firstOption === "--stats" || firstOption === "--s") {
+//   options.validate = false;
+//   options.stats = true;
+// }
 // else {
 //   console.log("Opción no valida");
-//   options.validate = false;
-//   options.stats = false;
-//   options.flagError = true;
 // }
 
-const isFileOrDirectory = pathToFile => {
-  fs.lstat(pathToFile, (err, stats) => {
+const isFileOrDirectory = path => {
+  fs.lstat(path, (err, stats) => {
     if (err) {
       console.log("Encontramos un error: la ruta no es valida");
     } else if (stats.isDirectory()) {
       console.log("es directorio");
-      return goDirectory(path);
+      // return goDirectory(path);
     } else {
       console.log("es archivo");
       return goMdFile(path);
@@ -76,50 +71,80 @@ const isFileOrDirectory = pathToFile => {
   });
 };
 
-const goDirectory = (path) => {
-  return new Promise((resolve, reject) => {
-    fileHound
-      .create()
-      .discard("node_modules") //saca la carpeta
-      .paths(path)
-      .ext("md")
-      .find((err, files) => {
-        if (files.length === 0) {
-          console.log(err);
-          reject("Lamentablemente no hay archivo .md en este directorio");
-        }
-      })
-      .then(files => {
-        resolve(files);
-      });
-  });
+// const goDirectory = (path) => {
+//   return new Promise((resolve, reject) => {
+//     fileHound
+//       .create()
+//       .discard("node_modules") //saca la carpeta
+//       .paths(path)
+//       .ext("md")
+//       .find((err, files) => {
+//         if (files.length === 0) {
+//           console.log(err);
+//           reject("Lamentablemente no hay archivo .md en este directorio");
+//         }
+//       })
+//       .then(files => {
+//         resolve(files);
+//       });
+//   });
+// };
+
+const goMdFile = file => {
+  let extFile = path.extname(file);
+  if (extFile === ".md") {
+    console.log("es un archivo .md");
+    readMdFile(file);
+  } else {
+    console.log(
+      "El archivo ingresado no es extensión .md, intente otro archivo o directorio"
+    );
+  }
 };
 
-const goMdFile = (file) => {
-  return new Promise((resolve, reject) => {
-    let extFile = path.extname(file);
-    if (extFile === ".md") {
-      console.log("es un archivo .md").then(res => {
-        resolve(res);
-      });
+const readMdFile = file => {
+  fs.readFile(file, "utf-8", (err, data) => {
+    if (err) {
+      console.log(err);
     } else {
-      reject(
-        "El archivo ingresado no es extensión .md, intente otro archivo o directorio"
-      );
+      let links = [];
+      const renderer = new marked.Renderer();
+      renderer.link = function(href, title, text) {
+        links.push({
+          href: href,
+          file: file,
+          text: text
+        });
+      };
+      marked(data, { renderer: renderer });
+      printLinks(links);
+      return links;
     }
   });
 };
 
+const printLinks = links => {
+  console.log("LINKS PRINT:", links);
+};
 
-new Promise((resolve, reject) => {
-  if (options[0] === undefined && options[1] === undefined) {
-    isFileOrDirectory(pathToFile)
-      .then(links => {
-        resolve(links);
-      })
-      .catch(err => {
-        reject(err);
-      });
-  }
-});
-//};
+// const validate = links => {
+//   console.log("LINKS PRINT:", links);
+// };
+
+const mdlinks = path => {
+  isFileOrDirectory(path);
+};
+mdlinks(pathToFile);
+// const mdlinks = (path) => {
+//   new Promise((resolve, reject) => {
+//     if (options[0] === undefined && options[1] === undefined) {
+//       isFileOrDirectory(path)
+//         .then(links => {
+//           resolve(links);
+//         })
+//         .catch(err => {
+//           reject(err);
+//         });
+//     }
+//   });
+// };
