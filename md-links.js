@@ -106,13 +106,12 @@ const goMdFile = file => {
   }
 };
 
+
 const readMdFile = file => {
   fs.readFile(file, "utf-8", (err, data) => {
     let links = [];
     if (err) {
       console.log(err);
-    } else if (links.length === 0) {
-      console.log("Oh! No hay links en este archivo");
     } else {
       const renderer = new marked.Renderer();
       renderer.link = function (href, title, text) {
@@ -126,10 +125,38 @@ const readMdFile = file => {
         renderer: renderer
       });
       validateOption(links);
+      console.log("recebe:", links);
       return links;
+    }
+    if (links.length === 0) {
+      console.log("Oh! No hay links en este archivo");
     }
   });
 };
+// const readMdFile = file => {
+//   fs.readFile(file, "utf-8", (err, data) => {
+//     let links = [];
+//     if (err) {
+//       console.log(err);
+//     } else if (links.length === 0) {
+//       console.log("Oh! No hay links en este archivo");
+//     } else {
+//       const renderer = new marked.Renderer();
+//       renderer.link = function (href, title, text) {
+//         links.push({
+//           href: href,
+//           file: file,
+//           text: text
+//         });
+//       };
+//       marked(data, {
+//         renderer: renderer
+//       });
+//       validateOption(links);
+//       return links;
+//     }
+//   });
+// };
 
 // //hacer una petición de la URL para que devuelva el status
 // fetchUrl("https://www.instagram.com", function (error, meta, body) {
