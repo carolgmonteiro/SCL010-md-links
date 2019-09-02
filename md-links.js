@@ -17,6 +17,12 @@ const fileHound = require("fileHound");
 
 let pathToFile = process.argv[2];
 console.log("PATH:", pathToFile);
+let links = [];
+let linksFail = [];
+let linksOk = [];
+let totalLinks = 0;
+let uniqueLinks = 0;
+let brokenLinks = 0;
 // let firstOption = process.argv[3];
 // console.log("FIRST OP:", firstOption);
 // let secondOption = process.argv[4];
@@ -61,6 +67,7 @@ console.log("PATH NORMALIZE:", pathToFile);
 
 
 const isFileOrDirectory = (path) => {
+
   fs.lstat(path, (err, stats) => {
     if (err) {
       console.log("Encontramos un error: la ruta o archivo no es valido");
@@ -74,7 +81,7 @@ const isFileOrDirectory = (path) => {
   });
 };
 
-
+// //función para verificar archivos .md en un directorio
 // const goDirectory = (path) => {
 //   return new Promise((resolve, reject) => {
 //     fileHound
@@ -106,10 +113,10 @@ const goMdFile = file => {
   }
 };
 
-
+//función para leer los archivos .md y verificar si hay links
 const readMdFile = file => {
+
   fs.readFile(file, "utf-8", (err, data) => {
-    let links = [];
     if (err) {
       console.log(err);
     } else {
@@ -124,81 +131,87 @@ const readMdFile = file => {
       marked(data, {
         renderer: renderer
       });
-      validateOption(links);
-      console.log("recebe:", links);
-      return links;
-    }
-    if (links.length === 0) {
-      console.log("Oh! No hay links en este archivo");
+      if (links.length === 0) {
+        console.log("Oh! No hay links en este archivo, intente otro");
+      } else {
+        // console.log("links del archivo:", links.length);
+        validateOption(links);
+        statsOption(links);
+        // console.log("recebe:", links);
+        return links;
+      }
     }
   });
 };
-// const readMdFile = file => {
-//   fs.readFile(file, "utf-8", (err, data) => {
-//     let links = [];
-//     if (err) {
-//       console.log(err);
-//     } else if (links.length === 0) {
-//       console.log("Oh! No hay links en este archivo");
-//     } else {
-//       const renderer = new marked.Renderer();
-//       renderer.link = function (href, title, text) {
-//         links.push({
-//           href: href,
-//           file: file,
-//           text: text
-//         });
-//       };
-//       marked(data, {
-//         renderer: renderer
-//       });
-//       validateOption(links);
-//       return links;
-//     }
-//   });
-// };
 
-// //hacer una petición de la URL para que devuelva el status
-// fetchUrl("https://www.instagram.com", function (error, meta, body) {
-//     console.log("HTTP STATUS:", meta.status);
-//     console.log("FINAL URL:", meta.finalUrl);
-// });
-
-// const printLinks = links => {
-//   console.log("LINKS PRINT:", links);
-// };
-
+//función para validar el status de cada link del archivo
 const validateOption = (links) => {
   // console.log("LINKS:", links);
   links.forEach(link => {
-    console.log("LINKS:", link.href);
+    //console.log("LINKS:", link.href);
     fetchUrl(link.href, function (error, meta, body) {
-      if (meta.status > 399) {
-        console.log("URL:", meta.finalUrl);
-        console.log("STATUS: FAIL", meta.status);
+      if (meta.status > 299) {
+        linksFail.push({
+          url: meta.finalUrl,
+          status: meta.status
+        })
+        console.log("linksFail:", linksFail);
+        return linksFail;
+        // console.log("URL:", meta.finalUrl);
+        // console.log("STATUS: FAIL", meta.status);
       } else {
-        console.log("URL:", meta.finalUrl);
-        console.log("STATUS: OK", meta.status);
+        linksOk.push({
+          url: meta.finalUrl,
+          status: meta.status
+        })
+        // console.log("URL:", meta.finalUrl);
+        // console.log("STATUS: OK", meta.status);
+        console.log("linksOK:", linksOk);
+        return linksOk;
       }
     })
   })
+  // let validateResult = {
+  //   linksOK: linksOk,
+  //   linksFail: linksFail
+  // }
+  // console.log(validateResult);
 };
 
-// const statusOption = (links) => {
-//   let allLinks = links.forEach(link => {
-//     console.log("LINKS:", link.href);
-//   });
-//   let totalLinks = allLinks.length;
+const statsOption = (links) => {
+  let allLinks = links.map(link => link.href);
+  let broken = [];
+  //console.log("ALL LINKS:", allLinks);
+  totalLinks += allLinks.length;
+  //console.log("TOTAL LINKS:", totalLinks);
+  uniqueLinks += [...new Set(allLinks)].length;
+  //console.log("UNIQUE LINKS:", uniqueLinks);
+  links.forEach(link => {
+    //console.log("LINKS:", link.href);
+    fetchUrl(link.href, function (error, meta, body) {
+      if (meta.status > 299) {
+        //console.log("404:", meta.finalUrl);
+        // //   broken += [broken.push(meta.finalUrl)].length;
+        console.log("STATUS:", meta.status);
+      }
+    })
+  });
+  console.log("BROKEN LINKS:", broken);
+  let statsResult = {
+    total: totalLinks,
+    unique: uniqueLinks,
+    broken: brokenLinks
+  }
+  console.log(statsResult);
+};
 
-// }
-
-
-//Validar los links
-// const validate = links => {
-//   console.log("LINKS PRINT:", links);
-// };
-
-//Estadistica de links
+// links.filter(link => {
+//   if (link.response.statusCode > 299) {
+//     brokenLinks += [broken.push(link.response)].length;
+//   };
+//   return brokenLinks;
+// })
+// console.log("BROKEN LINKS:", brokenLinks);
 
 const mdlinks = path => {
   isFileOrDirectory(path);

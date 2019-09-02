@@ -9,6 +9,12 @@ const fs = require('fs');
 const http = require("http");
 const fileHound = require("fileHound");
 
+//función para imprimir los links (debe ir en index.js) usar chalk
+// const printMdLinks = links => {
+//   console.log("LINKS PRINT:", links);
+// };
+
+
 
 // let script_path = process.argv[1];
 // console.log("SCRIPT:", script_path);
