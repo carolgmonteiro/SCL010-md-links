@@ -60,3 +60,17 @@ myFirstPromise.then(response => {
 let mySecondPromise = newPromise((resolve, reject) => {
     setTimeout(() => resolve(5), 200)
 });
+
+// //encuentrar archivo en el sistema
+// const files = fileHound.create()
+//     .paths("directorio")
+//     .ext(".md")
+//     .find();
+
+// files.then(console.log);
+
+// //hacer una petición de la URL para que devuelva el status
+// fetchUrl("https://www.instagram.com", function (error, meta, body) {
+//     console.log("HTTP STATUS:", meta.status);
+//     console.log("FINAL URL:", meta.finalUrl);
+// });

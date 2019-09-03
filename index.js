@@ -9,17 +9,12 @@ const fs = require('fs');
 const http = require("http");
 const fileHound = require("fileHound");
 
-// // Grab provided arguments
-// const [, sourcePath, ...args] = process.argv;
-// //camino absoluto path.resolve([...caminos])
-// //arregla el camino path.normalize(camino)
+//función para imprimir los links (debe ir en index.js) usar chalk
+// const printMdLinks = links => {
+//   console.log("LINKS PRINT:", links);
+// };
 
-// //imprime lo que se escribe en la linea de comando
-// console.log(`Hola por favor ingresa su ruta`)
-// console.log(`ruta archivo ${sourcePath}`);
-// console.log(`ruta ${args}`);
-// console.log(`path ${path}`);
-// console.log(`bin ${bin}`);
+
 
 // let script_path = process.argv[1];
 // console.log("SCRIPT:", script_path);
@@ -32,9 +27,6 @@ console.log("SECOND OP:", secondOption);
 
 userPathToFile = path.normalize(userPathToFile)
 
-
-
-
 //encuentrar archivo en el sistema
 const files = fileHound.create()
     .discard("node_modules") //saca la carpeta
@@ -43,7 +35,6 @@ const files = fileHound.create()
     .find();
 
 files.then(console.log);
-
 
 fs.stat(userPathToFile, function (err) {
     if (!err) {
@@ -68,8 +59,6 @@ fs.stat(userPathToFile, function (err) {
 
 // let pathFile = path.parse(__filename);
 // console.log(pathFile);
-
-
 
 // // funcion para saber se archivo existe
 // function filePathExists(userPathToFile) {
