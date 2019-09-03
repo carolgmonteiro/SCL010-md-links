@@ -5,6 +5,16 @@
 // console.log("free mem:", os.freemem(), "bytes");
 // console.log("total mem:", os.totalmem(), "bytes");
 
+//console.log("LINKS:", links);
+/* linksValidate = [];
+links.forEach(link => {
+  fetch(link.href)
+    .then(res => {
+      link['status'] = res.status
+      console.log("LINK:", link)
+    })
+}); */
+
 
 //criar archivo y leerlos 
 // const fs = require("fs");
@@ -74,3 +84,254 @@ let mySecondPromise = newPromise((resolve, reject) => {
 //     console.log("HTTP STATUS:", meta.status);
 //     console.log("FINAL URL:", meta.finalUrl);
 // });
+
+const statsOption = (links) => {
+    let allLinks = links.map(link => link.href);
+    console.log("ALL LINKS:", allLinks);
+    let broken = [];
+    // let statsResult = {};
+    let brokenLinks = 0;
+    totalLinks += allLinks.length;
+    console.log("TOTAL LINKS:", totalLinks);
+    uniqueLinks += [...new Set(allLinks)].length;
+    console.log("UNIQUE LINKS:", uniqueLinks);
+    //let arrayResult = [];
+    return new Promise((resolve, reject) => {
+        console.log("LINKS:", link.href);
+        fetch(allLinks).then(res => {
+            console.log("PRUEBA:", allLinks.href);
+            (res.forEach(link => {
+                if (link.status > 299) {
+                    broken.push(link.status);
+                    resolve(link);
+                    console.log("LINK FAIL:", allLinks);
+                }
+                // brokenLinks = broken.length;
+                // console.log("BROKEN LINKS:", brokenLinks);
+                let statsResult = {
+                    total: totalLinks,
+                    unique: uniqueLinks,
+                    broken: brokenLinks
+                };
+                resolve(statsResult);
+                arrayResult.push(statsResult);
+                console.log("STATS RESULT:", statsResult);
+            }))
+        })
+    });
+};
+
+const statsOption = (links) => {
+    let allLinks = links.map(link => link.href);
+    let broken = [];
+    // let statsResult = {};
+    let brokenLinks = 0;
+    //console.log("ALL LINKS:", allLinks);
+    totalLinks += allLinks.length;
+    //console.log("TOTAL LINKS:", totalLinks);
+    uniqueLinks += [...new Set(allLinks)].length;
+    //console.log("UNIQUE LINKS:", uniqueLinks);
+    //let arrayResult = [];
+    return Promise.all(links.forEach(link => {
+        //console.log("LINKS:", link.href);
+        return new Promise((resolve, reject) => {
+            fetch(link.href).then(res => {
+                console.log("PRUEBA:", link.href);
+                if (res.status > 299) {
+                    broken.push(res.status);
+                    resolve(link);
+                    console.log("LINK FAIL:", link);
+                }
+                brokenLinks = broken.length;
+                console.log("BROKEN LINKS:", brokenLinks);
+                let statsResult = {
+                    total: totalLinks,
+                    unique: uniqueLinks,
+                    broken: brokenLinks
+                };
+                resolve(statsResult);
+                //arrayResult.push(statsResult);
+                console.log("STATS RESULT:", statsResult);
+            })
+        })
+    }));
+};
+
+const statsOption = (links) => {
+    let allLinks = links.map(link => link.href);
+    let broken = [];
+    // let statsResult = {};
+    let brokenLinks = 0;
+    //console.log("ALL LINKS:", allLinks);
+    totalLinks += allLinks.length;
+    //console.log("TOTAL LINKS:", totalLinks);
+    uniqueLinks += [...new Set(allLinks)].length;
+    //console.log("UNIQUE LINKS:", uniqueLinks);
+    let returnArray = []
+    Promise.all(links.forEach(link => {
+        //console.log("LINKS:", link.href);
+        return new Promise((resolve, reject) => {
+            fetch(link.href).then(res => {
+                if (res.status > 299) {
+                    broken.push(res.status);
+                    resolve(link);
+                    console.log("LINK FAIL:", link);
+                }
+                brokenLinks = broken.length;
+                console.log("BROKEN LINKS:", brokenLinks);
+                let statsResult = {
+                    total: totalLinks,
+                    unique: uniqueLinks,
+                    broken: brokenLinks
+                };
+                returnArray.push(statsResult);
+                resolve(returnArray);
+                //console.log("STATS RESULT:", statsResult);
+            })
+        })
+    }));
+};
+
+
+
+
+// links.filter(link => {
+//   if (link.response.statusCode > 299) {
+//     brokenLinks += [broken.push(link.response)].length;
+//   };
+//   return brokenLinks;
+// })
+// // console.log("BROKEN LINKS:", brokenLinks);
+// const statsOption = (links) => {
+//     return new Promise((resolve, reject) => {
+//         let allLinks = links.map(link => link.href);
+//         let broken = [];
+//         let brokenLinks = 0;
+//         totalLinks += allLinks.length;
+//         uniqueLinks += [...new Set(allLinks)].length;
+//         links.forEach(link => {
+//             fetch(link.href).then(res => {
+//               if (res.status > 299) {
+//                 link.status = res.status;
+//                 link.response = "FAIL";
+//                 resolve(link);
+//                 console.log("LINK FAIL:", link);
+//               }
+//             })
+//             let statsResult = {
+//               Total: totalLinks,
+//               Unique: uniqueLinks,
+//               Broken: broken.length
+//             };
+//             resolve(statsResult);
+//             console.log("STATS RESULT:", statsResult);
+//           }
+//           //console.log("UNIQUE LINKS:", uniqueLinks);
+//           // links.filter(link => {
+//           //   console.log("LINK::", link);
+//           //   if (link.status > 299) {
+//           //     broken.push(link.status);
+//           //     console.log("BROKEN:", broken.length);
+//           //     brokenLinks += broken.length;
+//           //     console.log("BROKEN LINKS:", brokenLinks);
+//           //   };
+//           // });
+
+//         });
+//     };
+
+// const validateOption = (links) => {
+
+//   // console.log("LINKS:", links);
+//   links.forEach(link => {
+//     //console.log("LINKS:", link.href);
+//     fetchUrl(link.href, function (error, meta, body) {
+//       if (meta.status > 299) {
+//         linksFail.push({
+//           url: meta.finalUrl,
+//           status: meta.status
+//         })
+//         console.log("linksFail:", linksFail);
+//         return linksFail;
+//         // console.log("URL:", meta.finalUrl);
+//         // console.log("STATUS: FAIL", meta.status);
+//       } else {
+//         linksOk.push({
+//           url: meta.finalUrl,
+//           status: meta.status
+//         })
+//         // console.log("URL:", meta.finalUrl);
+//         // console.log("STATUS: OK", meta.status);
+//         console.log("linksOK:", linksOk);
+//         return linksOk;
+//       }
+//     })
+//   })
+//   // let validateResult = {
+//   //   linksOK: linksOk,
+//   //   linksFail: linksFail
+//   // }
+//   // console.log(validateResult);
+// };
+
+
+// const statsOption = (links) => {
+//   let allLinks = links.map(link => link.href);
+//   let broken = [];
+//   // let statsResult = {};
+//   let brokenLinks = 0;
+//   //console.log("ALL LINKS:", allLinks);
+//   totalLinks += allLinks.length;
+//   //console.log("TOTAL LINKS:", totalLinks);
+//   uniqueLinks += [...new Set(allLinks)].length;
+//   //console.log("UNIQUE LINKS:", uniqueLinks);
+//   return Promise.all(links.forEach(link => {
+//     //console.log("LINKS:", link.href);
+//     return new Promise((resolve, reject) => {
+//       fetchUrl(link.href, function (error, meta, body) {
+//         if (meta.status > 299) {
+//           broken.push(meta.finalUrl);
+//           console.log("BROKEN:", broken.length);
+//         };
+//         brokenLinks = broken.length;
+//         console.log("BROKEN LINKS:", brokenLinks);
+//         let statsResult = {
+//           total: totalLinks,
+//           unique: uniqueLinks,
+//           broken: brokenLinks
+//         };
+//         resolve(statsResult);
+//         console.log("STATS RESULT:", statsResult);
+//       })
+//     })
+//   }));
+// };
+
+// const statsOption = (links) => {
+//   return new Promise((resolve, reject) => {
+//     let allLinks = links.map(link => link.href);
+//     let broken = [];
+//     let brokenLinks = 0;
+//     totalLinks += allLinks.length;
+//     uniqueLinks += [...new Set(allLinks)].length;
+//     //console.log("UNIQUE LINKS:", uniqueLinks);
+//     return Promise.all(links.forEach(link => {
+//       //console.log("LINKS:", link.href);
+//       fetchUrl(link.href, function (error, meta, body) {
+//         if (meta.status > 299) {
+//           broken.push(meta.finalUrl);
+//           console.log("BROKEN:", broken.length);
+//         };
+//         brokenLinks = broken.length;
+//         console.log("BROKEN LINKS:", brokenLinks);
+//         let statsResult = {
+//           total: totalLinks,
+//           unique: uniqueLinks,
+//           broken: brokenLinks
+//         };
+//         resolve(statsResult);
+//         console.log("STATS RESULT:", statsResult);
+//       })
+//     }))
+//   });
+// };
