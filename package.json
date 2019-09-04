@@ -2,6 +2,7 @@
   "name": "md-links",
   "version": "0.1.0",
   "dependencies": {
+    "chalk": "^2.4.2",
     "commander": "^3.0.1",
     "eslint": "^6.2.1",
     "eslint-plugin-jest": "^22.15.2",
