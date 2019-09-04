@@ -1,63 +1,109 @@
 #!/usr/bin/env node
 
-//muestra las opciones para el usuario
-// const commander = require('commander');
-// const program = new commander.Command();
-// program.version('0.0.1');
 //busca los archivos
 const fs = require("fs");
 const path = require("path");
 //lee los archivos
 const marked = require("marked");
 //para hacer petición url
-// const fetch = require("fetch");
 const fetch = require("node-fetch");
-// const fetchUrl = fetch.fetchUrl;
 //para leer directorio
 const fileHound = require("fileHound");
+const chalk = require("chalk");
 
-let pathToFile = process.argv[2];
-console.log("PATH:", pathToFile);
+// let pathToFile = process.argv[2];
+// console.log("PATH:", pathToFile);
+// let firstOption = process.argv[3];
+// let secondOption = process.argv[4];
+
+// //transforma ruta absoluta en relativa
+// pathToFile = path.resolve(pathToFile);
+// pathToFile = path.normalize(pathToFile);
+
 let links = [];
 let totalLinks = 0;
 let uniqueLinks = 0;
-// let brokenLinks = 0;
-// let firstOption = process.argv[3];
-// console.log("FIRST OP:", firstOption);
-// let secondOption = process.argv[4];
-// console.log("SECOND OP:", secondOption);
 
-// //opciones de md.links
+
+// //Let con las opciones para md.links
 // let options = {
 //   validate: false,
 //   stats: false
 // };
 // if (
 //   (firstOption === "--validate" && secondOption === "--stats") ||
-//   (firstOption === "--v" && secondOption === "--s")
+//   (firstOption === "--v" && secondOption === "--s") ||
+//   (firstOption === "--stats" && secondOption === "--validate") ||
+//   (firstOption === "--s" && secondOption === "--v")
 // ) {
 //   options.validate = true;
 //   options.stats = true;
 // } else if (firstOption === "--validate" || firstOption === "--v") {
 //   options.validate = true;
-//   option.stats = false;
+//   options.stats = false;
 // } else if (firstOption === "--stats" || firstOption === "--s") {
 //   options.validate = false;
 //   options.stats = true;
+// } else {
+//   options.validate = false;
+//   options.stats = false;
 // }
 
-//ruta absoluta para relativa
-pathToFile = path.resolve(pathToFile);
-console.log("PATH RESOLVE:", pathToFile);
-pathToFile = path.normalize(pathToFile);
-console.log("PATH NORMALIZE:", pathToFile);
 
+//FUNCION MADRE CON LAS OPCIONES DE MDLINKS
+const mdlinks = (path, options) => {
+  return new Promise((resolve, reject) => {
+    if (options.validate === true && options.stats === true) {
+      isFileOrDirectory(path).then(res => {
+        statsValidateOption(res)
+          .then(res => {
+            resolve(res);
+            console.log(chalk.bold.yellow("VALIDATE + STATS RESULT:"));
+          });
+      });
+    } else if (options.validate === false && options.stats === true) {
+      isFileOrDirectory(path).then(res => {
+        statsOption(res).then(res => {
+          resolve(res);
+          console.log(chalk.bold.yellow("STATS LINKS RESULT:"));
+          //console.log("STATS", res);
+        });
+      });
+    } else if (options.validate === true && options.stats === false) {
+      isFileOrDirectory(path).then(links => {
+        validateOption(links).then(res => {
+          resolve(res);
+          console.log(chalk.bold.yellow("VALIDATE LINKS RESULT:"));
+          //console.log("VALIDATE:", res);
+        });
+      });
+    } else if (options.validate === false && options.stats === false) {
+      isFileOrDirectory(path)
+        .then(res => {
+          resolve(res);
+          console.log(chalk.bold.yellow("LINKS SEARCH RESULT:"));
+          //console.log("SIN OPCION:", res);
+        })
+        .catch(err => {
+          reject(err);
+          console.log("Elija una opción: Ninguna opcion | --validate o --v | --stats o --s  | --validate --stats o --v --s");
+        });
+    } else {
+      reject(
+        err
+      );
+    }
+  });
+};
 
-const isFileOrDirectory = (path) => {
+//FUNCION PARA FILTRAR SE ES ARCHIVO O DIRECTORIO
+const isFileOrDirectory = path => {
   return new Promise((resolve, reject) => {
     fs.lstat(path, (err, stats) => {
       if (err) {
-        reject(console.log("Encontramos un error: la ruta o archivo no es valido"));
+        reject(
+          console.log(chalk.bgRed("Encontramos un error: la ruta o archivo no es valido. Sólo archivos con extensión .md"))
+        );
       } else if (stats.isDirectory()) {
         console.log("es directorio");
         // return goDirectory(path);
@@ -65,19 +111,17 @@ const isFileOrDirectory = (path) => {
         resolve(goMdFile(path));
       }
     });
-  })
+  });
 };
 
-
+//FUNCION PARA BUSCAR LOS ARCHIVOS .MD
 const goMdFile = file => {
   let extFile = path.extname(file);
   if (extFile === ".md") {
-    console.log("es un archivo .md");
+    //console.log("es un archivo .md");
     return readMdFile(file);
   } else {
-    console.log(
-      "El archivo ingresado no es extensión .md, intente otro archivo o directorio"
-    );
+    console.log(chalk.red("El archivo ingresado no es extensión .md, intente otro archivo o directorio"));
   }
 };
 
@@ -99,111 +143,80 @@ const readMdFile = file => {
         marked(data, {
           renderer: renderer
         });
-        // if (links.length === 0) {
-        //   console.log("Oh! No hay links en este archivo, intente otro");
-        // } else {
-        //   // console.log("links del archivo:", links.length);
-        // validateOption(links);
-        // statsOption(links);
-        //   // console.log("recebe:", links);
-        // }
-        resolve(links);
+        if (links.length === 0) {
+          console.log("Oh! No hay links en este archivo, intente otro");
+        } else
+          resolve(links);
       }
     });
-  })
-};
-
-//función para validar el status de cada link del archivo
-const validateOption = (links) => {
-  //console.log("LINKS:", links);
-  linksValidate = [];
-  return Promise.all(links.map(link => {
-    return new Promise((resolve, reject) => {
-
-      // links.map(link => {
-      fetch(link.href).then(res => {
-        if (res.status > 299) {
-          link.status = res.status;
-          link.response = "FAIL";
-          resolve(link);
-          linksValidate.push(link);
-        }
-        //else {
-        //     link.status = res.status;
-        //     link.response = res.statusText;
-        //     resolve(link);
-        //     console.log("LINK OK:", link);
-        //   }
-        // })
-        // .catch(err => {
-        //   link.status = null;
-        //   link.response = "FAIL";
-        //   resolve(link);
-        //   console.log("ERR:", link);
-        // });
-        //console.log("LINK FAIL llalalla:", myLinks);
-        resolve(linksValidate);
-      })
-    });
-  }));
-};
-
-const statsOption = (links) => {
-  console.log("aaaaaaaaaaaaaaaaaaa", links)
-  return new Promise((resolve, reject) => {
-    let allLinks = links.map(link => link.href);
-    let broken = [];
-    let brokenLinks = 0;
-    totalLinks += allLinks.length;
-    uniqueLinks += [...new Set(allLinks)].length;
-    console.log("UNIQUE LINKS:", uniqueLinks);
-    links.filter(link => {
-      console.log("LINK::", link);
-      if (link.status > 299) {
-        broken.push(link.status);
-        console.log("BROKEN:", broken.length);
-        brokenLinks += broken.length;
-        console.log("BROKEN LINKS:", brokenLinks);
-      };
-    });
-    let statsResult = {
-      Total: totalLinks,
-      Unique: uniqueLinks,
-      Broken: broken.length
-    };
-    resolve(statsResult);
-    console.log("STATS RESULT:", statsResult);
-  })
-};
-
-
-
-// //Funcion MDLINKS (hub para las otras)
-// const mdlinks = (path) => {
-//   isFileOrDirectory(path)
-// };
-
-
-const mdlinks = (path) => {
-  let links;
-  return new Promise((resolve, reject) => {
-    isFileOrDirectory(path)
-      .then(res => {
-        validateOption(res)
-          .then(res => {
-            resolve(res)
-            console.log("ccccccccccccccccccc", res)
-          })
-
-      })
-    // validateOption(links)
-    // .then(res => {
-    //   statsOption(res)
-    //     .then(res => {
-    //       resolve(res);
-    //     });
-    // });
   });
 };
 
-mdlinks(pathToFile);
+//Estadisticas de TOTAL y UNIQUES
+const statsOption = links => {
+  return new Promise((resolve, reject) => {
+    let allLinks = links.map(link => link.href);
+    totalLinks += allLinks.length;
+    uniqueLinks += [...new Set(allLinks)].length;
+    let statsResult = {
+      total: totalLinks,
+      unique: uniqueLinks
+    };
+    resolve(statsResult);
+  });
+};
+
+//Validar los links con sus status
+const validateOption = links => {
+  //console.log("LINKS:", links);
+  return new Promise((resolve, reject) => {
+    let statusLinks = links.map(link => {
+      // links.map(link => {
+      return fetch(link.href).then(res => {
+        if (res.status > 299) {
+          link.status = res.status;
+          link.response = "FAIL";
+        } else {
+          link.status = res.status;
+          // link.response = res.statusText;
+          link.response = "O.K.";
+          //console.log("LINK OK:", linksValidate);
+        }
+      });
+    });
+    Promise.all(statusLinks).then(res => {
+      resolve(links);
+      //console.log("VALIDATE:", links);
+    });
+  });
+};
+
+const statsValidateOption = (links) => {
+  return new Promise((resolve, reject) => {
+    validateOption(links).then(link => {
+      let allLinks = link.map(link => link.href);
+      let statusLinks = links.map(link => link.response);
+      let totalLinks = statusLinks.length;
+      //console.log("totalLinks:", totalLinks);
+      let uniqueLinks = [...new Set(allLinks)].length;
+      //console.log("uniqueLinks:", uniqueLinks);
+      // let linksOk = statusLinks.toString().match(/OK/g);
+      // console.log("linksOk", linksOk);
+      let brokenLinks = (statusLinks.toString().match(/FAIL/g)).length;
+      //console.log("linksBroken:", brokenLinks);
+      let statsResult = {
+        total: totalLinks,
+        unique: uniqueLinks,
+        broken: brokenLinks
+      };
+      resolve(statsResult);
+      //console.log("STATS RESULT:", statsResult);
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+//exporta función madre mdLinks para index.js
+module.exports = mdlinks;
+// mdlinks(pathToFile, options);
