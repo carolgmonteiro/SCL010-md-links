@@ -71,8 +71,8 @@ const isFileOrDirectory = path => {
           err
         );
       } else if (stats.isDirectory()) {
-        console.log(chalk.bold("It is a directory"));
-        // return goDirectory(path);
+        //console.log(chalk.bold("It is a directory"));
+        resolve(goDirectory(path));
       } else {
         resolve(goMdFile(path));
       }
@@ -80,6 +80,25 @@ const isFileOrDirectory = path => {
   });
 };
 
+// Imprime en terminal los archivos que concuerden con la extención del formato markdown ".md".
+const goDirectory = (path) => {
+  return new Promise((resolve, reject) => {
+    fileHound.create()
+      .discard("node_modules")
+      .paths(path)
+      .ext(".md")
+      .find()
+      .then(res => (res.forEach(file => {
+        if (file.length != 0) {
+          console.log("We have found .md files at: " + file);
+          resolve(readMdFile(file));
+        }
+      })))
+      .catch(err => {
+        reject(new Error("Path it is not valid"));
+      })
+  })
+};
 //FUNCION PARA BUSCAR LOS ARCHIVOS .MD
 const goMdFile = file => {
   let extFile = path.extname(file);
@@ -91,7 +110,7 @@ const goMdFile = file => {
   }
 };
 
-//función para leer los archivos .md y verificar si hay links
+//FUNCIÓN PARA LEER LOS ARCHIVOS .MD Y VERIFICAR SI HAY LINKS
 const readMdFile = file => {
   return new Promise((resolve, reject) => {
     fs.readFile(file, "utf-8", (err, data) => {
@@ -110,7 +129,7 @@ const readMdFile = file => {
           renderer: renderer
         });
         if (links.length === 0) {
-          console.log("\n" + chalk.bold.red("Oh! We couldn´t find a link, try on another file." + "\n"));
+          console.log(chalk.bold.red("We haven´t found any links at: ") + chalk.red.underline(file));
         } else
           resolve(links);
       }

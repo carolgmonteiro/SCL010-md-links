@@ -55,7 +55,7 @@ mdLinks(pathToFile, options)
         console.log(
           chalk.bold.inverse.white("FILE:") +
           chalk.white(link.file) +
-          " " +
+          "\n" +
           chalk.bold.bgBlue("LINK:") +
           chalk.bold.blue("[" + link.text + "]") +
           " " +
@@ -82,7 +82,7 @@ mdLinks(pathToFile, options)
             chalk.bold.inverse("FILE:") +
             " " +
             chalk.white(link.file) +
-            " " +
+            "\n" +
             chalk.bold.bgGreen(" STATUS:" + " " + link.status + " " + link.response + " ") +
             " " +
             chalk.bold.green("LINK:") +
@@ -96,7 +96,7 @@ mdLinks(pathToFile, options)
             chalk.bold.inverse("FILE:") +
             " " +
             chalk.white(link.file) +
-            " " +
+            "\n" +
             chalk.bold.bgRed(" STATUS:" + " " + link.status + " " + link.response + " ") +
             " " +
             chalk.bold.red("LINK:") +
@@ -119,5 +119,5 @@ mdLinks(pathToFile, options)
     }
   })
   .catch(err => {
-    console.log(chalk.bold.red("We found an error: The path or file is not valid. Only .md files extention" + "\n"));
+    console.log(chalk.bold.red("We found an error: The path or file is not valid. Try again." + "\n"));
   });
