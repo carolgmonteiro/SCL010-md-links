@@ -11,44 +11,9 @@ const fetch = require("node-fetch");
 const fileHound = require("fileHound");
 const chalk = require("chalk");
 
-// let pathToFile = process.argv[2];
-// console.log("PATH:", pathToFile);
-// let firstOption = process.argv[3];
-// let secondOption = process.argv[4];
-
-// //transforma ruta absoluta en relativa
-// pathToFile = path.resolve(pathToFile);
-// pathToFile = path.normalize(pathToFile);
-
 let links = [];
 let totalLinks = 0;
 let uniqueLinks = 0;
-
-
-// //Let con las opciones para md.links
-// let options = {
-//   validate: false,
-//   stats: false
-// };
-// if (
-//   (firstOption === "--validate" && secondOption === "--stats") ||
-//   (firstOption === "--v" && secondOption === "--s") ||
-//   (firstOption === "--stats" && secondOption === "--validate") ||
-//   (firstOption === "--s" && secondOption === "--v")
-// ) {
-//   options.validate = true;
-//   options.stats = true;
-// } else if (firstOption === "--validate" || firstOption === "--v") {
-//   options.validate = true;
-//   options.stats = false;
-// } else if (firstOption === "--stats" || firstOption === "--s") {
-//   options.validate = false;
-//   options.stats = true;
-// } else {
-//   options.validate = false;
-//   options.stats = false;
-// }
-
 
 //FUNCION MADRE CON LAS OPCIONES DE MDLINKS
 const mdlinks = (path, options) => {
@@ -58,14 +23,15 @@ const mdlinks = (path, options) => {
         statsValidateOption(res)
           .then(res => {
             resolve(res);
-            console.log(chalk.bold.yellow("VALIDATE + STATS RESULT:"));
+            //console.log("V+S:", res)
+            console.log(chalk.bold.yellow("VALIDATE + STATS RESULT:" + "\n"));
           });
       });
     } else if (options.validate === false && options.stats === true) {
       isFileOrDirectory(path).then(res => {
         statsOption(res).then(res => {
           resolve(res);
-          console.log(chalk.bold.yellow("STATS LINKS RESULT:"));
+          console.log(chalk.bold.yellow("STATS LINKS RESULT:" + "\n"));
           //console.log("STATS", res);
         });
       });
@@ -73,7 +39,7 @@ const mdlinks = (path, options) => {
       isFileOrDirectory(path).then(links => {
         validateOption(links).then(res => {
           resolve(res);
-          console.log(chalk.bold.yellow("VALIDATE LINKS RESULT:"));
+          console.log(chalk.bold.yellow("VALIDATE LINKS RESULT:" + "\n"));
           //console.log("VALIDATE:", res);
         });
       });
@@ -81,12 +47,12 @@ const mdlinks = (path, options) => {
       isFileOrDirectory(path)
         .then(res => {
           resolve(res);
-          console.log(chalk.bold.yellow("LINKS SEARCH RESULT:"));
+          console.log(chalk.bold.yellow("LINKS SEARCH RESULT:" + "\n"));
           //console.log("SIN OPCION:", res);
         })
         .catch(err => {
           reject(err);
-          console.log("Elija una opción: Ninguna opcion | --validate o --v | --stats o --s  | --validate --stats o --v --s");
+          // console.log("Choose an option: No option | --validate or --v | --stats or --s  | --validate --stats or --v --s");
         });
     } else {
       reject(
@@ -102,10 +68,10 @@ const isFileOrDirectory = path => {
     fs.lstat(path, (err, stats) => {
       if (err) {
         reject(
-          console.log(chalk.bgRed("Encontramos un error: la ruta o archivo no es valido. Sólo archivos con extensión .md"))
+          err
         );
       } else if (stats.isDirectory()) {
-        console.log("es directorio");
+        console.log(chalk.bold("It is a directory"));
         // return goDirectory(path);
       } else {
         resolve(goMdFile(path));
@@ -121,7 +87,7 @@ const goMdFile = file => {
     //console.log("es un archivo .md");
     return readMdFile(file);
   } else {
-    console.log(chalk.red("El archivo ingresado no es extensión .md, intente otro archivo o directorio"));
+    console.log(chalk.bgRed("This is not an .md extention file, try another file or directory" + "\n"));
   }
 };
 
@@ -144,7 +110,7 @@ const readMdFile = file => {
           renderer: renderer
         });
         if (links.length === 0) {
-          console.log("Oh! No hay links en este archivo, intente otro");
+          console.log("\n" + chalk.bold.red("Oh! We couldn´t find a link, try on another file." + "\n"));
         } else
           resolve(links);
       }
@@ -200,13 +166,14 @@ const statsValidateOption = (links) => {
       //console.log("totalLinks:", totalLinks);
       let uniqueLinks = [...new Set(allLinks)].length;
       //console.log("uniqueLinks:", uniqueLinks);
-      // let linksOk = statusLinks.toString().match(/OK/g);
-      // console.log("linksOk", linksOk);
+      let linksOk = (statusLinks.toString().match(/O.K./g)).length;
+      //console.log("linksOk", linksOk);
       let brokenLinks = (statusLinks.toString().match(/FAIL/g)).length;
       //console.log("linksBroken:", brokenLinks);
       let statsResult = {
         total: totalLinks,
         unique: uniqueLinks,
+        ok: linksOk,
         broken: brokenLinks
       };
       resolve(statsResult);
@@ -219,4 +186,3 @@ const statsValidateOption = (links) => {
 
 //exporta función madre mdLinks para index.js
 module.exports = mdlinks;
-// mdlinks(pathToFile, options);

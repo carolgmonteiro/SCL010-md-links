@@ -8,12 +8,16 @@ const path = require("path");
 const chalk = require("chalk");
 
 let pathToFile = process.argv[2];
-console.log(chalk.bold.inverse("FILE: ") + chalk.bold.inverse(pathToFile));
+console.log(chalk.bold.inverse.white("\n" +
+  " ---------------------------------------- MD-LINKS RESULT ---------------------------------------- "));
+console.log(chalk.bold.white("Choose an option: ") + chalk.white("No option | --validate or --v | --stats or --s  | --validate --stats or --v --s") + "\n");
+
+console.log(chalk.bold("FILE NAME: ") + chalk(pathToFile));
 
 //transforma ruta absoluta en relativa
 pathToFile = path.resolve(pathToFile);
 pathToFile = path.normalize(pathToFile);
-console.log(chalk.bold("FILE PATH: ") + chalk.underline.blue(pathToFile));
+console.log(chalk.bold("FILE PATH: ") + chalk.white(pathToFile) + "\n");
 //console.log("PATH:", pathToFile);
 
 let firstOption = process.argv[3];
@@ -43,25 +47,77 @@ if (
   options.stats = false;
 }
 
-mdLinks(pathToFile, options).then(links => {
+mdLinks(pathToFile, options)
+  .then(links => {
+    //Por defecto
     if (options.validate === false && options.stats === false) {
       links.map(link => {
-        console.log(chalk.inverse.yellow("FILE:") + chalk.yellow(link.file) + "\n" + chalk.inverse("TEXT:") + chalk.bold(link.text) + "\n" + chalk.inverse.blue("HREF:") + chalk.underline.blue(link.href))
+        console.log(
+          chalk.bold.inverse.white("FILE:") +
+          chalk.white(link.file) +
+          " " +
+          chalk.bold.bgBlue("LINK:") +
+          chalk.bold.blue("[" + link.text + "]") +
+          " " +
+          // chalk.inverse.blue("HREF:") +
+          chalk.underline.blue(link.href)
+        );
       });
+      //Opcion validate + stats
     } else if (options.validate === true && options.stats === true) {
-      console.log(chalk.bold.inverse("TOTAL LINKS:") + chalk.bold.inverse(links.total) + " " + chalk.bold.bgCyan("UNIQUE LINKS:") + chalk.bold.bgCyan(links.unique) + " " + chalk.bold.bgRed("BROKEN LINKS:") + chalk.bold.bgRed(links.broken));
+      console.log("\n" +
+        chalk.bold.inverse(" TOTAL LINKS: " + links.total + " ") +
+        " " +
+        chalk.bold.bgCyan(" UNIQUE LINKS:" + links.unique + " ") +
+        " " +
+        chalk.bold.bgGreen(" OK LINKS: " + links.ok + " ") +
+        " " +
+        chalk.bold.bgRed(" BROKEN LINKS: " + links.broken + " ") + "\n"
+      );
+      //Opcion validate
     } else if (options.validate === true && options.stats === false) {
       links.map(link => {
         if (link.response === "O.K.") {
-          console.log(chalk.inverse("FILE:") + " " + chalk.white(link.file) + " " + chalk.bgGreen("STATUS:") + " " + chalk.bgGreen(link.response) + " " + chalk.bgGreen(link.status) + " " + chalk.green("LINK:") + " " + chalk.bold.green(link.text) + " " + chalk.underline.green(link.href));
+          console.log(
+            chalk.bold.inverse("FILE:") +
+            " " +
+            chalk.white(link.file) +
+            " " +
+            chalk.bold.bgGreen(" STATUS:" + " " + link.status + " " + link.response + " ") +
+            " " +
+            chalk.bold.green("LINK:") +
+            " " +
+            chalk.bold.green("[" + link.text + "]") +
+            " " +
+            chalk.underline.green(link.href)
+          );
         } else if (link.response === "FAIL") {
-          console.log(chalk.inverse("FILE:") + " " + chalk.white(link.file) + " " + chalk.bgRed("STATUS:") + " " + chalk.bgRed(link.response) + " " + chalk.bgRed(link.status) + " " + chalk.red("LINK:") + " " + chalk.bold.red(link.text) + " " + chalk.underline.red(link.href));
+          console.log(
+            chalk.bold.inverse("FILE:") +
+            " " +
+            chalk.white(link.file) +
+            " " +
+            chalk.bold.bgRed(" STATUS:" + " " + link.status + " " + link.response + " ") +
+            " " +
+            chalk.bold.red("LINK:") +
+            " " +
+            chalk.bold.red("[" + link.text + "]") +
+            " " +
+            chalk.underline.red(link.href)
+          );
         }
-      })
+      });
+      //Opcion stats
     } else if (options.validate === false && options.stats === true) {
-      console.log(chalk.bold.inverse("TOTAL LINKS:") + chalk.bold.inverse(links.total) + " " + chalk.bold.bgCyan("UNIQUE LINKS:") + chalk.bold.bgCyan(links.unique));
+      console.log(
+        chalk.bold.inverse("TOTAL LINKS:") +
+        chalk.bold.inverse(links.total) +
+        " " +
+        chalk.bold.bgCyan("UNIQUE LINKS:") +
+        chalk.bold.bgCyan(links.unique) + "\n"
+      );
     }
   })
   .catch(err => {
-    console.log(chalk.magenta(err))
+    console.log(chalk.bold.red("We found an error: The path or file is not valid. Only .md files extention" + "\n"));
   });
