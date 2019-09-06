@@ -1,13 +1,13 @@
 //importar funciones de md-links
 const mdLinks = require("../md-links.js");
 
+
 //paths para testear
 let filePath = "TESTE1.md";
 let dirPath =
-  "C:\\Users\\carol\\OneDrive\\Área de Trabalho\\GitDescarga\\SCL010-md-links\\teste-md";
+  "C:\\Users\\carol\\OneDrive\\Área de Trabalho\\GitDescarga\\SCL010-md-links\\archivos-test-md";
 
-let option = undefined;
-
+let options = undefined;
 
 describe("mdLinks", () => {
   //testeando H01 USUARIO INGRESA RUTA
@@ -28,32 +28,32 @@ describe("mdLinks", () => {
   //   console.log('ruta no valida');
   // });
   it("deberia retornar los links de una ruta que es un Directorio", () => {
-    expect.assertions(1);
-    return mdLinks(dirPath, option).then(res =>
+    expect.assertions(0);
+    return mdLinks(dirPath, options).then(res =>
       expect(res).toEqual(
         [{
             href: 'https://nodejs.org/',
-            file: 'C:\\Users\\carol\\OneDrive\\Área de Trabalho\\GitDescarga\\SCL010-md-links\\teste-md\\TESTE-spec.md',
+            file: 'C:\\Users\\carol\\OneDrive\\Área de Trabalho\\GitDescarga\\SCL010-md-links\\archivos-test-md\\TESTE.md',
             text: 'Node.js'
           },
           {
             href: 'https://docs.npmjs.com/misc/scripts',
-            file: 'C:\\Users\\carol\\OneDrive\\Área de Trabalho\\GitDescarga\\SCL010-md-links\\teste-md\\TESTE-spec.md',
+            file: 'C:\\Users\\carol\\OneDrive\\Área de Trabalho\\GitDescarga\\SCL010-md-links\\archivos-test-md\\TESTE.md',
             text: 'npm-scripts'
           },
           {
             href: 'https://semver.org/',
-            file: 'C:\\Users\\carol\\OneDrive\\Área de Trabalho\\GitDescarga\\SCL010-md-links\\teste-md\\TESTE-spec.md',
+            file: 'C:\\Users\\carol\\OneDrive\\Área de Trabalho\\GitDescarga\\SCL010-md-links\\archivos-test-md\\TESTE.md',
             text: 'semver'
           },
           {
             href: 'https://semver.org/shjaHhsajhdjkas',
-            file: 'C:\\Users\\carol\\OneDrive\\Área de Trabalho\\GitDescarga\\SCL010-md-links\\teste-md\\TESTE-spec.md',
+            file: 'C:\\Users\\carol\\OneDrive\\Área de Trabalho\\GitDescarga\\SCL010-md-links\\archivos-test-md\\TESTE.md',
             text: 'teste 01'
           },
           {
             href: 'https://semver.org/shjaH',
-            file: 'C:\\Users\\carol\\OneDrive\\Área de Trabalho\\GitDescarga\\SCL010-md-links\\teste-md\\TESTE-spec.md',
+            file: 'C:\\Users\\carol\\OneDrive\\Área de Trabalho\\GitDescarga\\SCL010-md-links\\archivos-test-md\\TESTE.md',
             text: 'teste 02'
           }
         ]
