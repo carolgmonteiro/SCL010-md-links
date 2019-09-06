@@ -24,14 +24,14 @@ const mdlinks = (path, options) => {
           .then(res => {
             resolve(res);
             //console.log("V+S:", res)
-            console.log(chalk.bold.yellow("VALIDATE + STATS RESULT:" + "\n"));
+            console.log(chalk.bold.white("VALIDATE + STATS RESULT:" + "\n"));
           });
       });
     } else if (options.validate === false && options.stats === true) {
       isFileOrDirectory(path).then(res => {
         statsOption(res).then(res => {
           resolve(res);
-          console.log(chalk.bold.yellow("STATS LINKS RESULT:" + "\n"));
+          console.log(chalk.bold.white("STATS LINKS RESULT:" + "\n"));
           //console.log("STATS", res);
         });
       });
@@ -39,7 +39,7 @@ const mdlinks = (path, options) => {
       isFileOrDirectory(path).then(links => {
         validateOption(links).then(res => {
           resolve(res);
-          console.log(chalk.bold.yellow("VALIDATE LINKS RESULT:" + "\n"));
+          console.log(chalk.bold.white("VALIDATE LINKS RESULT:" + "\n"));
           //console.log("VALIDATE:", res);
         });
       });
@@ -47,17 +47,18 @@ const mdlinks = (path, options) => {
       isFileOrDirectory(path)
         .then(res => {
           resolve(res);
-          console.log(chalk.bold.yellow("LINKS SEARCH RESULT:" + "\n"));
+          console.log(chalk.bold.white("LINKS SEARCH RESULT:" + "\n"));
           //console.log("SIN OPCION:", res);
         })
         .catch(err => {
           reject(err);
-          // console.log("Choose an option: No option | --validate or --v | --stats or --s  | --validate --stats or --v --s");
+          console.log("Choose an option: No option | --validate or --v | --stats or --s  | --validate --stats or --v --s");
         });
-    } else {
-      reject(
-        err
-      );
+      // } else {
+      //   reject(
+      //     err
+      //   );
+      //   //console.log("ERR");
     }
   });
 };
@@ -165,7 +166,7 @@ const validateOption = links => {
           link.status = res.status;
           // link.response = res.statusText;
           link.response = "O.K.";
-          //console.log("LINK OK:", linksValidate);
+          //console.log("LINK OK:", link.response);
         }
       });
     });

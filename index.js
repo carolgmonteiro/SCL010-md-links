@@ -47,6 +47,82 @@ if (
   options.stats = false;
 }
 
+// mdLinks(pathToFile, options)
+//   .then(links => {
+//     //Por defecto
+//     if (options.validate === false && options.stats === false) {
+//       links.map(link => {
+//         console.log(
+//           chalk.bold.inverse.white(" FILE: ") +
+//           chalk.white(link.file) +
+//           "\n" +
+//           chalk.bold.inverse(" TEXT: ") +
+//           chalk.bold("[" + link.text.substr(0, 50) + "]") +
+//           "\n" +
+//           chalk.inverse.blue(" LINK: ") +
+//           chalk.underline.blue(link.href)
+//         );
+//       });
+//       //Opcion validate + stats
+//     } else if (options.validate === true && options.stats === true) {
+//       console.log("\n" +
+//         chalk.bold.inverse(" TOTAL LINKS: " + links.total + " ") +
+//         " " +
+//         chalk.bold.bgCyan(" UNIQUE LINKS:" + links.unique + " ") +
+//         " " +
+//         chalk.bold.bgGreen(" OK LINKS: " + links.ok + " ") +
+//         " " +
+//         chalk.bold.bgRed(" BROKEN LINKS: " + links.broken + " ") + "\n"
+//       );
+//       //Opcion validate
+//     } else if (options.validate === true && options.stats === false) {
+//       links.map(link => {
+//         if (link.response === " O.K.") {
+//           console.log(
+//             chalk.bold.inverse(" FILE: ") +
+//             " " +
+//             chalk.white(link.file) +
+//             " " +
+//             chalk.bold.bgGreen(" STATUS: " + " " + link.status + " " + link.response + " ") +
+//             "\n" +
+//             chalk.bold.green(" TEXT | LINK: ") +
+//             " " +
+//             chalk.bold.green("[" + link.text.substr(0, 50) + "]") +
+//             " " +
+//             chalk.underline.green(link.href)
+//           );
+//         } else if (link.response === " FAIL ") {
+//           console.log(
+//             chalk.bold.inverse("FILE:") +
+//             " " +
+//             chalk.white(link.file) +
+//             " " +
+//             chalk.bold.bgRed(" STATUS:" + " " + link.status + " " + link.response + " ") +
+//             "\n" +
+//             chalk.bold.red(" TEXT | LINK: ") +
+//             " " +
+//             chalk.bold.red("[" + link.text.substr(0, 50) + "]") +
+//             " " +
+//             chalk.underline.red(link.href)
+//           );
+//         }
+//       });
+//       //Opcion stats
+//     } else if (options.validate === false && options.stats === true) {
+//       console.log(
+//         chalk.bold.inverse(" TOTAL LINKS: ") +
+//         chalk.bold.inverse(links.total) +
+//         " " +
+//         chalk.bold.bgCyan(" UNIQUE LINKS: ") +
+//         chalk.bold.bgCyan(links.unique) + "\n"
+//       );
+//     }
+//   })
+//   .catch(err => {
+//     console.log(chalk.bold.red("We found an error: The path or file is not valid. Try again." + "\n"));
+//   });
+
+
 mdLinks(pathToFile, options)
   .then(links => {
     //Por defecto
@@ -57,7 +133,7 @@ mdLinks(pathToFile, options)
           chalk.white(link.file) +
           "\n" +
           chalk.bold.bgBlue("LINK:") +
-          chalk.bold.blue("[" + link.text + "]") +
+          chalk.bold.blue("[" + link.text.substr(0, 50) + "]") +
           " " +
           // chalk.inverse.blue("HREF:") +
           chalk.underline.blue(link.href)
@@ -87,7 +163,7 @@ mdLinks(pathToFile, options)
             " " +
             chalk.bold.green("LINK:") +
             " " +
-            chalk.bold.green("[" + link.text + "]") +
+            chalk.bold.green("[" + link.text.substr(0, 50) + "]") +
             " " +
             chalk.underline.green(link.href)
           );
@@ -101,7 +177,7 @@ mdLinks(pathToFile, options)
             " " +
             chalk.bold.red("LINK:") +
             " " +
-            chalk.bold.red("[" + link.text + "]") +
+            chalk.bold.red("[" + link.text.substr(0, 50) + "]") +
             " " +
             chalk.underline.red(link.href)
           );
@@ -121,3 +197,79 @@ mdLinks(pathToFile, options)
   .catch(err => {
     console.log(chalk.bold.red("We found an error: The path or file is not valid. Try again." + "\n"));
   });
+
+
+// mdLinks(pathToFile, options)
+//   .then(links => {
+//     //Por defecto
+//     if (options.validate === false && options.stats === false) {
+//       links.map(link => {
+//         console.log(
+//           chalk.bold.inverse.white(" FILE: ") +
+//           chalk.white(link.file) +
+//           "\n" +
+//           chalk.bold.inverse(" TEXT: ") +
+//           chalk.bold("[" + link.text.substr(0, 50) + "]") +
+//           "\n" +
+//           chalk.inverse.blue(" LINK: ") +
+//           chalk.underline.blue(link.href)
+//         );
+//       });
+//       //Opcion validate + stats
+//     } else if (options.validate === true && options.stats === true) {
+//       console.log("\n" +
+//         chalk.bold.inverse(" TOTAL LINKS: " + links.total + " ") +
+//         " " +
+//         chalk.bold.bgCyan(" UNIQUE LINKS:" + links.unique + " ") +
+//         " " +
+//         chalk.bold.bgGreen(" OK LINKS: " + links.ok + " ") +
+//         " " +
+//         chalk.bold.bgRed(" BROKEN LINKS: " + links.broken + " ") + "\n"
+//       );
+//       //Opcion validate
+//     } else if (options.validate === true && options.stats === false) {
+//       links.map(link => {
+//         if (link.response === " O.K.") {
+//           console.log(
+//             chalk.bold.inverse(" FILE: ") +
+//             " " +
+//             chalk.white(link.file) +
+//             " " +
+//             chalk.bold.bgGreen(" STATUS: " + " " + link.status + " " + link.response + " ") +
+//             "\n" +
+//             chalk.bold.green(" TEXT | LINK: ") +
+//             " " +
+//             chalk.bold.green("[" + link.text.substr(0, 50) + "]") +
+//             " " +
+//             chalk.underline.green(link.href)
+//           );
+//         } else if (link.response === " FAIL ") {
+//           console.log(
+//             chalk.bold.inverse("FILE:") +
+//             " " +
+//             chalk.white(link.file) +
+//             " " +
+//             chalk.bold.bgRed(" STATUS:" + " " + link.status + " " + link.response + " ") +
+//             "\n" +
+//             chalk.bold.red(" TEXT | LINK: ") +
+//             " " +
+//             chalk.bold.red("[" + link.text.substr(0, 50) + "]") +
+//             " " +
+//             chalk.underline.red(link.href)
+//           );
+//         }
+//       });
+//       //Opcion stats
+//     } else if (options.validate === false && options.stats === true) {
+//       console.log(
+//         chalk.bold.inverse(" TOTAL LINKS: ") +
+//         chalk.bold.inverse(links.total) +
+//         " " +
+//         chalk.bold.bgCyan(" UNIQUE LINKS: ") +
+//         chalk.bold.bgCyan(links.unique) + "\n"
+//       );
+//     }
+//   })
+//   .catch(err => {
+//     console.log(chalk.bold.red("We found an error: The path or file is not valid. Try again." + "\n"));
+//   });
