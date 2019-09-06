@@ -1,10 +1,9 @@
 {
-  "name": "md-links",
+  "name": "@carolgmonteiro/md-links",
   "version": "1.0.0",
   "description": "Software that analizes links from markdown files",
   "main": "./index.js",
   "bin": {
-    "cgm-md-links": "bin/md-links",
     "md-links": "./index.js"
   },
   "publishConfig": {

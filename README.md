@@ -10,14 +10,10 @@ La libreria, que está en el idioma inglés, fue creada usando [Node.js](https:/
 
 ## Instalación
 
-```js
-const mdLinks = require("cgm-md-links");
-```
-
-Con el comando `npm install cgm-md-links` podemos instalar directamente. Ver [docs oficiales de `npm install` acá](https://docs.npmjs.com/cli/install).
+Con el comando `npm i @carolgmonteiro/md-links` podemos instalar directamente. Ver [docs oficiales de `npm install` acá](https://docs.npmjs.com/cli/install).
 
 ```
-npm install cgm-md-links
+npm i @carolgmonteiro/md-links
 ```
 
 ## Como usar
@@ -25,7 +21,7 @@ npm install cgm-md-links
 En el archivo JS:
 
 ```js
-const mdlinks = require("cgm-md-links");
+const mdlinks = require("md-links");
 ```
 
 ---
