@@ -14,6 +14,7 @@ const chalk = require("chalk");
 let links = [];
 let totalLinks = 0;
 let uniqueLinks = 0;
+let brokenLinks = 0;
 
 //FUNCION MADRE CON LAS OPCIONES DE MDLINKS
 const mdlinks = (path, options) => {
@@ -52,13 +53,12 @@ const mdlinks = (path, options) => {
         })
         .catch(err => {
           reject(err);
-          console.log("Choose an option: No option | --validate or --v | --stats or --s  | --validate --stats or --v --s");
+          console.log(chalk.bold.red("Path not valid, please choose another one and choose an option: No option | --validate or --v | --stats or --s  | --validate --stats or --v --s"));
         });
-      // } else {
-      //   reject(
-      //     err
-      //   );
-      //   //console.log("ERR");
+    } else {
+      reject(
+        console.log("ruta no valida")
+      );
     }
   });
 };
@@ -119,7 +119,14 @@ const readMdFile = file => {
         console.log(err);
       } else {
         const renderer = new marked.Renderer();
+        // Taken from https://github.com/markedjs/marked/issues/1279
+        let linkWithImageSizeSupport = /^!?\[((?:\[[^\[\]]*\]|\\[\[\]]?|`[^`]*`|[^\[\]\\])*?)\]\(\s*(<(?:\\[<>]?|[^\s<>\\])*>|(?:\\[()]?|\([^\s\x00-\x1f()\\]*\)|[^\s\x00-\x1f()\\])*?(?:\s+=(?:[\w%]+)?x(?:[\w%]+)?)?)(?:\s+("(?:\\"?|[^"\\])*"|'(?:\\'?|[^'\\])*'|\((?:\\\)?|[^)\\])*\)))?\s*\)/;
+        marked.InlineLexer.rules.normal.link = linkWithImageSizeSupport;
+        marked.InlineLexer.rules.gfm.link = linkWithImageSizeSupport;
+        marked.InlineLexer.rules.breaks.link = linkWithImageSizeSupport;
         renderer.link = function (href, title, text) {
+          // Remove image size at the end, e.g. ' =20%x50'
+          href = href.replace(/ =\d*%?x\d*%?$/, "");
           links.push({
             href: href,
             file: file,
@@ -159,20 +166,26 @@ const validateOption = links => {
     let statusLinks = links.map(link => {
       // links.map(link => {
       return fetch(link.href).then(res => {
-        if (res.status > 299) {
+        if (res.status === 200) {
           link.status = res.status;
-          link.response = "FAIL";
+          link.response = "O.K.";
+          //console.log("LINK O.K.", link.response);
         } else {
           link.status = res.status;
-          // link.response = res.statusText;
-          link.response = "O.K.";
-          //console.log("LINK OK:", link.response);
+          link.response = res.statusText;
+          link.response = "FAIL";
+          //console.log("LINK FAIL", link.response);
         }
       });
     });
     Promise.all(statusLinks).then(res => {
       resolve(links);
       //console.log("VALIDATE:", links);
+    }).catch(err => {
+      links.status = null;
+      links.response = "FAIL";
+      resolve(links);
+      //console.log("catch:", links);
     });
   });
 };
@@ -182,24 +195,39 @@ const statsValidateOption = (links) => {
     validateOption(links).then(link => {
       let allLinks = link.map(link => link.href);
       let statusLinks = links.map(link => link.response);
-      let totalLinks = statusLinks.length;
+      //console.log("statusLinks:", statusLinks);
+      let totalLinks = allLinks.length;
       //console.log("totalLinks:", totalLinks);
-      let uniqueLinks = [...new Set(allLinks)].length;
+      uniqueLinks = [...new Set(allLinks)];
       //console.log("uniqueLinks:", uniqueLinks);
-      let linksOk = (statusLinks.toString().match(/O.K./g)).length;
-      //console.log("linksOk", linksOk);
-      let brokenLinks = (statusLinks.toString().match(/FAIL/g)).length;
-      //console.log("linksBroken:", brokenLinks);
+      brokenLinks += (statusLinks.toString().match(/FAIL/g));
+      //console.log("brokenLinks:", brokenLinks);
       let statsResult = {
         total: totalLinks,
-        unique: uniqueLinks,
-        ok: linksOk,
-        broken: brokenLinks
-      };
-      resolve(statsResult);
-      //console.log("STATS RESULT:", statsResult);
+        unique: uniqueLinks.length,
+        broken: brokenLinks.length
+      }
+      //console.log("STATS RESULT 2:", statsResult);
+      if (brokenLinks === 0) {
+        statsResult = {
+          total: totalLinks,
+          unique: uniqueLinks.length,
+          broken: 0
+        }
+        resolve(statsResult);
+      } else {
+        brokenLinks = (statusLinks.toString().match(/FAIL/g)).length;
+        let statsResult = {
+          total: totalLinks,
+          unique: uniqueLinks.length,
+          broken: brokenLinks
+        }
+        resolve(statsResult);
+        //console.log("STATS RESULT:", statsResult);
+      }
     }).catch(err => {
       reject(err)
+      console.log(chalk.bold.red("ERROR VALIDATE STATS OPTION. TRY AGAIN"));
     })
   })
 }

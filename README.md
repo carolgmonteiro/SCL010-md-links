@@ -4,7 +4,7 @@ Markdown es un lenguaje de marcado ligero muy popular entre developers. Es usado
 
 Estos archivos Markdown normalmente contienen links (vínculos/ligas) que muchas veces están rotos o ya no son válidos y eso perjudica mucho el valor de la información que se quiere compartir.
 
-La libreria, que está traducida para el **inglés**, fue creada usando [Node.js](https://nodejs.org/), e su función es leer y analizar archivos en formato `Markdown` desde el input de un unico archivo hasta un directorio. Extrae links de los archivos y los verifica el status de los links y saca estadísticas cómo total de links, links que no funcionan y unicos.
+La libreria, que está en el idioma inglés, fue creada usando [Node.js](https://nodejs.org/), e su función es leer y analizar archivos en formato `Markdown` desde el input de un unico archivo hasta un directorio. Extrae links de los archivos y los verifica el status de los links y saca estadísticas cómo total de links, links que no funcionan y unicos.
 
 # Guía de Uso e Instalación
 
@@ -107,14 +107,13 @@ Entrega las seguientes estadísticas de los links:
 `Total -` el total de links encontrados;
 `Unique -` el total de links unicos.
 `Broken -` el total de links rotos;
-`OK -` el total de links funcionando;
 
 Usar así
 `md-links <"path-to-directory"> --stats --validate`
 `md-links <"path-to-file"> --stats --validate`
 `--stats --validate` | `--validate --stats` | `--s --v` | `--v --s`
 
-<a href="https://ibb.co/HDQ1cGs"><img src="https://i.ibb.co/gMCH0tp/STATS-VALIDATE-OP-FILE.png" alt="STATS-VALIDATE-OP-FILE" border="0"></a>
+<a href="https://ibb.co/rdH9rKH"><img src="https://i.ibb.co/2ZdJ40d/STATS-VALIDATE-OP-FILE.png" alt="STATS-VALIDATE-OP-FILE" border="0"></a>
 
 ---
 
@@ -136,18 +135,18 @@ Usar así
 
 ### Planificación:
 
-####Trello
+**Diagrama de Flujo**
+
+<a href="https://ibb.co/VCpKJ9R"><img src="https://i.ibb.co/myFxbTk/Slide2.png" alt="Slide2" border="0"></a>
+
+**Trello**
 
 El board con el backlog de la implementación de la librería puede ser encontrado [aquí.](https://trello.com/b/igGvDu6L)
 <a href="https://ibb.co/gWFSKFy"><img src="https://i.ibb.co/JpFvJFn/Slide11.png" alt="Slide11" border="0"></a>
 
-####Diagrama de Flujo
+**Milestones del proyecto**
 
-<a href="https://ibb.co/VCpKJ9R"><img src="https://i.ibb.co/myFxbTk/Slide2.png" alt="Slide2" border="0"></a>
-
-####Milestones del proyecto
-
-El proyecto fue ordenado en milestones, recorriendo cada parte del diagrama de flujo
+El proyecto fue ordenado en milestones en trello, recorriendo cada parte del diagrama de flujo
 
 <a href="https://ibb.co/vdFJ7c5"><img src="https://i.ibb.co/8xCjWm3/Slide3.png" alt="Slide3" border="0"></a>
 <a href="https://ibb.co/vzVjB3x"><img src="https://i.ibb.co/F7mDW5b/Slide4.png" alt="Slide4" border="0"></a>
@@ -164,6 +163,7 @@ El proyecto fue ordenado en milestones, recorriendo cada parte del diagrama de f
 
 ## Autora
 
-[Carolina Guido Monteiro](https://github.com/gisellem22)
+[Carolina Guido Monteiro](https://github.com/carolgmonteiro)
+Desarrolladora Front-end
 
 ---
