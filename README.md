@@ -1,4 +1,4 @@
-# Md-Links | Libreria para extraer links de archivos Markdown
+# Md-Links | Extrae links de archivos Markdown
 
 Markdown es un lenguaje de marcado ligero muy popular entre developers. Es usado en muchas plataformas que manejan texto plano (GitHub, foros, blogs, ...), y es muy común encontrar varios archivos en ese formato en cualquier tipo de repositorio (empezando por el tradicional README.md).
 
@@ -27,6 +27,8 @@ const mdlinks = require("md-links");
 ---
 
 **Cómo llamar a libreria desde la terminal:**
+
+<a href="https://www.loom.com/share/08c9d8ea29384221b53d6b463a0eba7b"> <p>Tutorial md-links - Watch Video</p> <img src="https://cdn.loom.com/sessions/thumbnails/08c9d8ea29384221b53d6b463a0eba7b-with-play.gif"> </a>
 
 - Para path-to-file igual a un Directorio
 
