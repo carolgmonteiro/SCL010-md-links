@@ -10,7 +10,10 @@ La libreria, que está en el idioma inglés, fue creada usando [Node.js](https:/
 
 ## Instalación
 
-Con el comando `npm i @carolgmonteiro/md-links` podemos instalar directamente. Ver [docs oficiales de `npm install` acá](https://docs.npmjs.com/cli/install).
+Con el comando `npm i @carolgmonteiro/md-links` podemos instalar directamente.
+
+- [La publicación de `md-links`en npm](https://www.npmjs.com/package/@carolgmonteiro/md-links?activeTab=dependencies).
+- [Docs oficiales de `npm install` acá](https://docs.npmjs.com/cli/install).
 
 ```
 npm i @carolgmonteiro/md-links
