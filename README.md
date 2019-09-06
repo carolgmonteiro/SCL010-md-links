@@ -1,4 +1,4 @@
-# Md-Links | Libreria para extraer links de archivos Markdown
+# Md-Links | Extrae links de archivos Markdown
 
 Markdown es un lenguaje de marcado ligero muy popular entre developers. Es usado en muchas plataformas que manejan texto plano (GitHub, foros, blogs, ...), y es muy común encontrar varios archivos en ese formato en cualquier tipo de repositorio (empezando por el tradicional README.md).
 
@@ -10,14 +10,13 @@ La libreria, que está en el idioma inglés, fue creada usando [Node.js](https:/
 
 ## Instalación
 
-```js
-const mdLinks = require("cgm-md-links");
-```
+Con el comando `npm i @carolgmonteiro/md-links` podemos instalar directamente.
 
-Con el comando `npm install cgm-md-links` podemos instalar directamente. Ver [docs oficiales de `npm install` acá](https://docs.npmjs.com/cli/install).
+- [La publicación de `md-links`en npm](https://www.npmjs.com/package/@carolgmonteiro/md-links?activeTab=dependencies).
+- [Docs oficiales de `npm install` acá](https://docs.npmjs.com/cli/install).
 
 ```
-npm install cgm-md-links
+npm i @carolgmonteiro/md-links
 ```
 
 ## Como usar
@@ -25,12 +24,14 @@ npm install cgm-md-links
 En el archivo JS:
 
 ```js
-const mdlinks = require("cgm-md-links");
+const mdlinks = require("md-links");
 ```
 
 ---
 
 **Cómo llamar a libreria desde la terminal:**
+
+<a href="https://www.loom.com/share/08c9d8ea29384221b53d6b463a0eba7b"> <p>Tutorial md-links - Watch Video</p> <img src="https://cdn.loom.com/sessions/thumbnails/08c9d8ea29384221b53d6b463a0eba7b-with-play.gif"> </a>
 
 - Para path-to-file igual a un Directorio
 
